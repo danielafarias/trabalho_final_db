@@ -16,6 +16,7 @@ def execute(sql, params=None):
         with conn.cursor() as cursor:
             cursor.execute(sql, params)
             conn.commit()
+            return cursor.lastrowid
 
 
 def query(sql, params=None):
@@ -26,7 +27,7 @@ def query(sql, params=None):
 
 
 def insert(tabela, colunas, valores):
-    execute(f"INSERT INTO {tabela} ({','.join(colunas)}) VALUES ({','.join(['%s' for valor in valores])})", valores)
+    return execute(f"INSERT INTO {tabela} ({','.join(colunas)}) VALUES ({','.join(['%s' for valor in valores])})", valores)
 
 
 def delete(tabela, coluna, valor):
@@ -42,4 +43,8 @@ def update(tabela, chave, valor_chave, colunas, valores):
 #     return query(f"""SELECT * FROM {tabela} WHERE {chave} LIKE '%' LIMIT {limit} offset {offset}""", (valor_chave,))
 
 def select(tabela, chave, valor_chave):
-    return query(f"SELECT * FROM {tabela} WHERE {chave} LIKE %s", [valor_chave])
+    return query(f"SELECT * FROM {tabela} WHERE {chave} = %s", (valor_chave,))
+
+
+def select_like(tabela, chave, valor_chave):
+    return query(f"SELECT * FROM {tabela} WHERE {chave} LIKE %s", (valor_chave,))

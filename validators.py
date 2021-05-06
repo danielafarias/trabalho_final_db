@@ -1,4 +1,4 @@
-# from models import get_diretor
+from models import get_diretor, get_genero, get_filme, get_usuario
 
 
 def valida_diretor(nome_completo):
@@ -6,11 +6,8 @@ def valida_diretor(nome_completo):
     if len(nome_completo) == 0:
         return False
 
-    # diretor = get_diretor(nome_completo)
-    # if len(diretor) != 0:
-    #     return False
-
     return True
+
 
 def valida_genero(nome):
 
@@ -18,6 +15,7 @@ def valida_genero(nome):
         return False
 
     return True
+
 
 def valida_filme(titulo, ano, classificacao, preco, diretores_id, generos_id):
 
@@ -49,8 +47,8 @@ def valida_usuario(nome_completo, CPF):
 
     if len(CPF) == 0 or len(CPF) > 14:
         return False
-    return True
 
+    return True
 
 def valida_id(id):
 
