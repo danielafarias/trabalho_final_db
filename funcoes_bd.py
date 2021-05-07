@@ -21,7 +21,7 @@ def execute(sql, params=None):
 
 def query(sql, params=None):
     with connect(host="localhost", user="root", password="root", database="locadora") as conn:
-        with conn.cursor() as cursor:
+        with conn.cursor(dictionary=True) as cursor:
             cursor.execute(sql, params)
             return cursor.fetchall()
 
