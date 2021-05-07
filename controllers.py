@@ -1,10 +1,10 @@
-from flask import Flask, jsonify, request
-from serializers import diretor_from_web, diretor_from_db, genero_from_web, genero_from_db, filme_from_web, \
-    filme_from_db, usuario_from_db, usuario_from_web, delete_id_from_web, delete_id_from_db
+from flask import Flask, jsonify, request, Response
+from serializers import diretor_from_web, diretores_from_db, genero_from_web, generos_from_db, filme_from_web, \
+    filmes_from_db, usuarios_from_db, usuario_from_web, delete_id_from_web, delete_id_from_db
 from validators import valida_diretor, valida_genero, valida_filme, valida_usuario, valida_id
 from models import insert_diretor, insert_genero, insert_filme, insert_usuario, update_diretor, update_genero, \
     update_filme, update_usuario, delete_diretor, delete_genero, delete_filme, delete_usuario, select_diretor, \
-    get_diretor
+    get_diretor, get_genero, get_filme, get_usuario, select_genero, select_filme, select_usuario
 
 
 app = Flask(__name__)
@@ -12,13 +12,14 @@ app = Flask(__name__)
 
 # Criar => Diretor, Gênero, Filme, Usuário
 # Criar => enviar dados como json e retornar o json do item criado
+
 @app.route("/diretores", methods=["POST"])
 def inserir_diretor():
     diretor = diretor_from_web(**request.json)
     if valida_diretor(**diretor):
-        insert_diretor(**diretor)
-        # diretor_inserido = get_diretor(diretor["nome_completo"])
-        return jsonify(diretor_from_db(diretor))
+        id = insert_diretor(**diretor)
+        diretor_inserido = get_diretor(diretor[id])
+        return jsonify(diretores_from_db(diretor_inserido))
     else:
         return jsonify({"erro": "Diretor Inválido."})
 
@@ -27,8 +28,9 @@ def inserir_diretor():
 def inserir_genero():
     genero = genero_from_web(**request.json)
     if valida_genero(**genero):
-        insert_genero(**genero)
-        return jsonify(genero_from_db(genero))
+        id = insert_genero(**genero)
+        genero_inserido = get_genero(genero[id])
+        return jsonify(generos_from_db(genero_inserido))
     else:
         return jsonify({"erro": "Gênero Inválido."})
 
@@ -37,8 +39,9 @@ def inserir_genero():
 def inserir_filme():
     filme = filme_from_web(**request.json)
     if valida_filme(**filme):
-        insert_filme(**filme)
-        return jsonify(filme_from_db(filme))
+        id = insert_filme(**filme)
+        filme_inserido = get_filme(id)
+        return jsonify(filmes_from_db(filme_inserido))
     else:
         return jsonify({"erro": "Filme Inválido."})
 
@@ -47,20 +50,23 @@ def inserir_filme():
 def inserir_usuario():
     usuario = usuario_from_web(**request.json)
     if valida_usuario(**usuario):
-        insert_usuario(**usuario)
-        return jsonify(usuario_from_db(usuario))
+        id = insert_usuario(**usuario)
+        usuario_inserido = get_usuario(id)
+        return jsonify(usuarios_from_db(usuario_inserido))
     else:
         return jsonify({"erro": "Usuário Inválido."})
 
 
 # Alterar => Diretor, Gênero, Filme, Usuário
 # Alterar => enviar dados como json para a url que tem o id do item e retornar o json do item alterado
+
 @app.route("/diretores/<int:id>", methods=["PUT"])
 def alterar_diretor(id):
     diretor = diretor_from_web(**request.json)
     if valida_id(id):
         update_diretor(id, **diretor)
-        return jsonify(diretor_from_db(diretor))
+        diretor_alterado = get_genero(id)
+        return jsonify(diretores_from_db(diretor_alterado), Response[201])
     else:
         return jsonify({"erro": "Diretor Inválido."})
 
@@ -70,25 +76,29 @@ def alterar_genero(id):
     genero = genero_from_web(**request.json)
     if valida_id(id):
         update_genero(id, **genero)
-        return jsonify(genero_from_db(genero))
+        genero_alterado = get_genero(genero["nome"])
+        return jsonify(generos_from_db(genero_alterado))
     else:
         return jsonify({"erro": "Genêro Inválido."})
+
 
 @app.route("/filmes/<int:id>", methods=["PUT"])
 def alterar_filme(id):
     filme = filme_from_web(**request.json)
     if valida_id(id):
         update_filme(id, **filme)
-        return jsonify(filme_from_db(filme))
+        filme_alterado = get_filme("titulo", "ano", "classificacao", "preco", "diretores_id", "generos_id")
+        return jsonify(filmes_from_db(filme_alterado))
     else:
         return jsonify({"erro": "Filme Inválido."})
+
 
 @app.route("/usuarios/<int:id>", methods=["PUT"])
 def alterar_usuario(id):
     usuario = usuario_from_web(**request.json)
     if valida_id(id):
         update_usuario(id, **usuario)
-        return jsonify(usuario_from_db(usuario))
+        return jsonify(usuarios_from_db(usuario))
     else:
         return jsonify({"erro": "Usuário Inválido."})
 
@@ -96,15 +106,17 @@ def alterar_usuario(id):
 # Apagar => Diretor, Gênero, Filme, Usuário
 # Apagar => requisitar delete na url que tem o id do item, se tiver chave estrangeira,
 # exibe uma mensagem de erro tratado
+
 @app.route("/diretores/<int:id>", methods=["DELETE"])
 def apagar_diretor(id):
     diretor_id = delete_id_from_web(**request.json)
     try:
         if valida_id(id):
             delete_diretor(**diretor_id)
-            return jsonify(delete_id_from_db(diretor_id))
+            return jsonify(delete_id_from_db("", 204))
     except:
         return jsonify({"erro": "É impossível apagar este diretor."})
+# set foreign_key_checks=0;
 
 
 @app.route("/generos/<int:id>", methods=["DELETE"])
@@ -116,6 +128,7 @@ def apagar_genero(id):
             return jsonify(delete_id_from_db(genero_id))
     except:
         return jsonify({"erro": "É impossível apagar este gênero."})
+
 
 @app.route("/filmes/<int:id>", methods=["DELETE"])
 def apagar_filme(id):
@@ -139,28 +152,47 @@ def apagar_usuario(id):
         return jsonify({"erro": "É impossível apagar este usuário."})
 
 
-
 # Buscar => Diretor, Gênero, Filme, Usuário
 # Buscar => Buscar por nome/titulo usando LIKE
 
 @app.route("/diretores", methods=["GET"])
 def buscar_diretor():
-    diretor = diretor_from_web(**request.json) # pegar o diretor da web
-    select_diretor(**diretor)
-    diretor_selecionado = get_diretor(diretor["nome_completo"])
-    if diretor_selecionado != None:
-        return jsonify(diretor_from_db(diretor_selecionado))
-    elif diretor_selecionado == None:
+    diretor = diretor_from_web(**request.args)
+    diretores_selecionados = select_diretor(**diretor)
+    if len(diretores_selecionados) > 0:
+        return jsonify(diretores_from_db(diretores_selecionados))
+    else:
         return jsonify({"erro": "Diretor não encontrado."})
 
-    # try:
-    #     if valida_diretor(**diretor) != 0:
-    #         select_diretor(**diretor)
-    #         diretor_selecionado = get_diretor(diretor["nome_completo"])
-    #         return jsonify(diretor_from_db(diretor_selecionado))
-    # except:
-    #     return jsonify({"erro": "Diretor não encontrado."})
 
+@app.route("/generos", methods=["GET"])
+def buscar_genero():
+    genero = genero_from_web(**request.args)
+    generos_selecionados = select_genero(**genero)
+    if len(generos_selecionados) > 0:
+        return jsonify(generos_from_db(generos_selecionados))
+    else:
+        return jsonify({"erro": "Gênero não encontrado."})
+
+
+@app.route("/filmes", methods=["GET"])
+def buscar_filme():
+    filme = filme_from_web(**request.args)
+    filmes_selecionados = select_filme(**filme)
+    if len(filmes_selecionados) > 0:
+        return jsonify(filmes_from_db(filmes_selecionados))
+    else:
+        return jsonify({"erro": "Filme não encontrado."})
+
+
+@app.route("/usuarios", methods=["GET"])
+def buscar_usuario():
+    usuario = usuario_from_web(**request.args)
+    usuarios_selecionados = select_usuario(**usuario)
+    if len(usuarios_selecionados) > 0:
+        return jsonify(usuarios_from_db(usuarios_selecionados))
+    else:
+        return jsonify({"erro": "Usuário não encontrado."})
 
 
 if __name__ == "__main__":
