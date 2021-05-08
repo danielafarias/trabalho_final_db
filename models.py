@@ -1,7 +1,6 @@
 from funcoes_bd import insert, update, delete, select, select_like
 
 
-
 def insert_diretor(nome_completo):
     return insert("diretores", ["nome_completo"], [nome_completo])
 
@@ -84,3 +83,18 @@ def select_usuario(nome_completo):
     return select_like("diretores", "nome_completo", f"%{nome_completo}%")
 
 
+def insert_locacao(data_inicio, data_fim, filmes_id, usuarios_id):
+    return insert("locacoes", ["data_inicio", "data_fim", "filmes_id", "usuarios_id"], [data_inicio, data_fim, filmes_id, usuarios_id])
+
+
+def get_locacao(id):
+    return select("locacoes", "id", id)[0]
+
+
+def insert_pagamento(tipo, status, codigo_pagamento, valor, data, locacoes_id):
+    return insert("pagamentos", ["tipo", "status", "codigo_pagamento", "valor", "data", "locacoes_id"],
+                  [tipo, status, codigo_pagamento, valor, data, locacoes_id])
+
+
+def get_pagamento(id):
+    return select("pagamentos", "id", id)

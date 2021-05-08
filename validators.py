@@ -1,5 +1,3 @@
-from models import get_diretor, get_genero, get_filme, get_usuario
-
 
 def valida_diretor(nome_completo):
 
@@ -50,3 +48,25 @@ def valida_usuario(nome_completo, CPF):
 
     return True
 
+
+def valida_locacao(filmes_id, usuarios_id):
+
+    if filmes_id == 0:
+        return False
+
+    if usuarios_id == 0:
+        return False
+
+    return True
+
+
+def valida_pagamento(tipo, valor, locacoes_id):
+
+    if tipo != "debito" or tipo != "credito" or tipo != "paypal":
+        return False
+
+    if valor == 0:
+        return False
+
+    if locacoes_id == 0:
+        return False

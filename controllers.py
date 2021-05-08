@@ -1,12 +1,15 @@
 from flask import Flask, jsonify, request, Response
 from serializers import diretor_from_web, diretores_from_db, genero_from_web, generos_from_db, filme_from_web, \
     filmes_from_db, usuarios_from_db, usuario_from_web, titulo_filme_from_web, nome_genero_from_web, \
-    nome_diretor_from_web, nome_usuario_from_web
-from validators import valida_diretor, valida_genero, valida_filme, valida_usuario
+    nome_diretor_from_web, nome_usuario_from_web, locacao_from_web, locacoes_from_db, pagamento_from_web, \
+    pagamentos_from_db
+from validators import valida_diretor, valida_genero, valida_filme, valida_usuario, valida_locacao, valida_pagamento
 from models import insert_diretor, insert_genero, insert_filme, insert_usuario, update_diretor, update_genero, \
     update_filme, update_usuario, delete_diretor, delete_genero, delete_filme, delete_usuario, select_diretor, \
-    get_diretor, get_genero, get_filme, get_usuario, select_genero, select_filme, select_usuario
-
+    get_diretor, get_genero, get_filme, get_usuario, select_genero, select_filme, select_usuario, insert_locacao, \
+    get_locacao, insert_pagamento, get_pagamento
+from datetime import timedelta, datetime
+from random import randint, choice
 
 app = Flask(__name__)
 
@@ -66,7 +69,7 @@ def alterar_diretor(id):
     diretor = diretor_from_web(**request.json)
     if valida_diretor(diretor):
         update_diretor(id, **diretor)
-        diretor_alterado = get_genero(id)
+        diretor_alterado = get_diretor(id)
         return jsonify(diretores_from_db(diretor_alterado), Response[201])
     else:
         return jsonify({"erro": "Diretor Inválido."})
@@ -196,22 +199,41 @@ def buscar_usuario():
 # Locações:
 # Inserir => data_inicio, data_fim, filmes_id, usuarios_id
 #  Colocar a data de fim 48h depois da data de inicio (automático)
-# Como adicionar 48h numa data:
-# from datetime import datetime, timedelta
-# datetime.now()
-# datetime.datetime(2021, 4, 30, 22, 37, 4, 387981)
-# agora = datetime.now()
-# agora + timedelta(hours=48)
-# datetime.datetime(2021, 5, 2, 22, 37, 8, 762753)
+
+@app.route("/locacoes", methods=["POST"])
+def inserir_locacao():
+    locacao = locacao_from_web(**request.json)
+    dia_da_locacao = datetime.now()
+    prazo = timedelta(hours=48, minutes=0, seconds=0)
+    prazo_final = dia_da_locacao + prazo
+    if valida_locacao(**locacao):
+        id = insert_locacao(dia_da_locacao, prazo_final, **locacao)
+        locacao_cadastrada = get_locacao(id)
+        return jsonify(locacoes_from_db(locacao_cadastrada))
+    else:
+        return jsonify({"erro": "Locação inválida"})
 
 
 # Pagamento:
 # Inserir  tipo, status, codigo_pagamento, valor, data, locacoes_id
 # locacoes_id  Foreign Key ligando com Locações
-#  Preencher o valor do pagamento com o valor do filme
+#  Preencher o valor do pagamento com o valor do filme <<<<<< DÚVIDA PARA TIRAR SEGUNDA
 #  Gerar um código de pagamento aleatório pra preencher no código de pagamento
 #  Colocar o status aleatório
 
+@app.route("/pagamentos", methods=["POST"])
+def inserir_pagamento():
+    pagamento = pagamento_from_web(**request.json)
+    status_dos_pagamentos = ("aprovado", "em analise", "reprovado")
+    status_atual = choice(status_dos_pagamentos)
+    codigo = randint(0, 1000)
+    data_pagamento = datetime.now()
+    if valida_pagamento(**pagamento):
+        id = insert_pagamento(status_atual, codigo, data_pagamento, **pagamento)
+        pagamento_registrado = get_pagamento(id)
+        return jsonify(pagamentos_from_db(pagamento_registrado))
+    else:
+        return jsonify({"erro": "Pagamento inválido"}) #ERRO >>> ESTÁ RETORNANDO INVALIDO OU NULO, ARRUMAR FIM DE SEMANA
 
 # Selects de Locações:
 # INNER JOIN  Listar locações pelo id do usuário

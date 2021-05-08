@@ -84,3 +84,41 @@ def nome_usuario_from_web(**kwargs):
     return {
         kwargs["nome_completo"] if "nome_completo" in kwargs else ""
     }
+
+
+def locacao_from_web(**kwargs):
+    return {
+
+        "filmes_id": kwargs ["filmes_id"] if "filmes_id" in kwargs else "",
+        "usuarios_id": kwargs ["usuarios_id"] if "usuarios_id" in kwargs else ""
+    }
+
+
+def locacoes_from_db(locacao):
+    return {
+        "id": locacao["id"],
+        "data_inicio": (locacao["data_inicio"]).strftime('%d-%m-%Y %H:%M:%S'),
+        "data_fim": (locacao["data_fim"]).strftime('%d-%m-%Y %H:%M:%S'),
+        "filmes_id": locacao["filmes_id"],
+        "usuarios_id": locacao["usuarios_id"]
+    }
+
+
+def pagamento_from_web(**kwargs):
+    return {
+        "tipo": kwargs["tipo"] if "tipo" in kwargs else "",
+        "valor": kwargs["valor"] if "valor" in kwargs else "", # DÚVIDA PARA SER TIRADA SEGUNDA
+        "locacoes_id": kwargs["locacoes_id"] if "locacoes_id" in kwargs else ""
+    }
+
+
+def pagamentos_from_db(pagamento):
+    return {
+        "id": pagamento["id"],
+        "tipo": pagamento["tipo"],
+        "status": pagamento["status"],
+        "codigo_pagamento": pagamento["codigo_pagamento"],
+        "valor": pagamento["valor"],
+        "data": (pagamento["data"]).strftime('%d-%m-%Y %H:%M:%S'),
+        "locacoes_id": pagamento["locacoes_id"]
+    }
