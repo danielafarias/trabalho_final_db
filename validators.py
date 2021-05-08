@@ -45,14 +45,8 @@ def valida_usuario(nome_completo, CPF):
     if len(nome_completo) == 0:
         return False
 
-    if len(CPF) == 0 or len(CPF) > 14:
+    if len(CPF) != 14:
         return False
 
     return True
 
-def valida_id(id):
-
-    if id == 0:
-        return False
-
-    return True
