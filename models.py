@@ -1,4 +1,4 @@
-from funcoes_bd import insert, update, delete, select, select_like
+from funcoes_bd import insert, update, delete, select, select_like, query, select_id
 
 
 def insert_diretor(nome_completo):
@@ -76,19 +76,29 @@ def select_genero(nome):
 
 
 def select_filme(titulo):
-    return select_like("filmes", "titulo", f"%{titulo}%")
+    return query(f"""SELECT filme.titulo, genero.nome, diretor.nome_completo FROM filmes AS filme 
+                    INNER JOIN generos AS genero ON filme.generos_id = genero.id
+                    INNER JOIN diretores AS diretor ON filme.diretores_id = diretores.id 
+                    WHERE titulo LIKE %s""", (titulo,))[0]
 
 
 def select_usuario(nome_completo):
     return select_like("diretores", "nome_completo", f"%{nome_completo}%")
 
 
+# def insert_locacao(valores):
+#     return execute(f"""INSERT INTO locacoes (data_inicio, data_fim, filmes_id, usuarios_id)
+#                     VALUES ({','.join(['%s' for valor in valores])})""", (valores,))
+
+
+# def insert_pagamento(valores):
+#     return execute(f"""INSERT INTO pagamentos (tipo, status, codigo_pagamento, valor, data, locacoes_id)
+#                     VALUES ({','.join(['%s' for valor in valores])})""", valores)
+
+
 def insert_locacao(data_inicio, data_fim, filmes_id, usuarios_id):
-    return insert("locacoes", ["data_inicio", "data_fim", "filmes_id", "usuarios_id"], [data_inicio, data_fim, filmes_id, usuarios_id])
-
-
-def get_locacao(id):
-    return select("locacoes", "id", id)[0]
+    return insert("locacoes", ["data_inicio", "data_fim", "filmes_id", "usuarios_id"],
+                  [data_inicio, data_fim, filmes_id, usuarios_id])
 
 
 def insert_pagamento(tipo, status, codigo_pagamento, valor, data, locacoes_id):
@@ -96,5 +106,26 @@ def insert_pagamento(tipo, status, codigo_pagamento, valor, data, locacoes_id):
                   [tipo, status, codigo_pagamento, valor, data, locacoes_id])
 
 
-def get_pagamento(id):
-    return select("pagamentos", "id", id)
+def get_preco():
+    return query("""SELECT preco FROM filmes INNER JOIN locacoes ON filmes.id = locacoes.filmes_id""")
+
+
+def get_locacao_id(id):
+    return select_id("locacoes", "id", id)
+#
+#
+# def get_preco():
+#     return select_column("preco", "filmes", "locacoes", "id", "id")[0]
+#
+#
+
+#
+#
+# def get_pagamento(id):
+#     return select("pagamentos", "id", id)
+#
+#
+def get_locacao(id1, id2):
+    return query(f"""SELECT locacoes.id, pagamentos.id FROM locacoes 
+                INNER JOIN pagamentos ON locacoes.id = pagamentos.locacoes_id
+                WHERE locacoes.%s = pagamentos.%s""", (id1, id2))[0]

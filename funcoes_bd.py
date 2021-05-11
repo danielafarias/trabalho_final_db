@@ -27,7 +27,8 @@ def query(sql, params=None):
 
 
 def insert(tabela, colunas, valores):
-    return execute(f"INSERT INTO {tabela} ({','.join(colunas)}) VALUES ({','.join(['%s' for valor in valores])})", valores)
+    return execute(f"""INSERT INTO {tabela} ({','.join(colunas)}) 
+    VALUES ({','.join(['%s' for valor in valores])})""", valores)
 
 
 def delete(tabela, coluna, valor):
@@ -48,3 +49,7 @@ def select(tabela, chave, valor_chave):
 
 def select_like(tabela, chave, valor_chave):
     return query(f"SELECT * FROM {tabela} WHERE {chave} LIKE %s", (valor_chave,))
+
+
+def select_id(tabela, chave, valor_chave):
+    return query(f"SELECT id FROM {tabela} WHERE {chave} LIKE %s", (valor_chave,))
