@@ -1,3 +1,4 @@
+# =====> Todas essas funções validam os valores requisitados pela web <=====
 
 def valida_diretor(nome_completo):
 
@@ -63,10 +64,13 @@ def valida_locacao(filmes_id, usuarios_id):
 # def valida_pagamento(tipo):
 #
 #     if tipo == "debito":
-#         return tipo[0]
+#         return True
 #
 #     elif tipo == "credito":
-#         return tipo[1]
+#         return True
+#
+#     elif tipo == "paypal":
+#         return True
 #
 #     else:
-#         return tipo[2]
+#         return False

@@ -1,22 +1,26 @@
+# =====> Diretor requisitado da web <=====
 def diretor_from_web(**kwargs):
     return {
         "nome_completo": kwargs["nome_completo"] if "nome_completo" in kwargs else "",
     }
 
 
+# =====> Diretor pego do banco de dados <=====
 def diretor_from_db(diretor):
     return {
         "id": diretor["id"],
-        "nome_completo": diretor["nome_completo"]
+        "nome_completo": diretor["nome_completo"],
     }
 
 
+# =====> Genero requisitado da Web <=====
 def genero_from_web(**kwargs):
     return {
         "nome": kwargs["nome"] if "nome" in kwargs else "",
     }
 
 
+# =====> Genero pego do banco de dados <=====
 def genero_from_db(genero):
     return {
         "id": genero["id"],
@@ -24,6 +28,7 @@ def genero_from_db(genero):
     }
 
 
+# =====> Filme requisitado da web <=====
 def filme_from_web(**kwargs):
     return {
         "titulo": kwargs["titulo"] if "titulo" in kwargs else "",
@@ -35,6 +40,7 @@ def filme_from_web(**kwargs):
     }
 
 
+# =====> Filme recebido pelo banco de dados <=====
 def filme_from_db(filme):
     return {
         "id": filme["id"],
@@ -47,6 +53,7 @@ def filme_from_db(filme):
     }
 
 
+# =====> Usuario requisitado pela web <=====
 def usuario_from_web(**kwargs):
     return {
         "nome_completo": kwargs["nome_completo"] if "nome_completo" in kwargs else "",
@@ -54,6 +61,7 @@ def usuario_from_web(**kwargs):
     }
 
 
+# =====> Usuario recebido pelo banco de dados <=====
 def usuario_from_db(usuario):
     return {
         "id": usuario["id"],
@@ -62,30 +70,35 @@ def usuario_from_db(usuario):
     }
 
 
+# =====> Nome do diretor requisitado pela web <=====
 def nome_diretor_from_web(**kwargs):
     return {
         kwargs["nome_completo"] if "nome_completo" in kwargs else ""
     }
 
 
+# =====> Nome do genero requisitado pela web <=====
 def nome_genero_from_web(**kwargs):
     return {
         kwargs["nome"] if "nome" in kwargs else ""
     }
 
 
+# =====> Titulo do filme requisitado pela web <=====
 def titulo_filme_from_web(**kwargs):
     return {
         kwargs["titulo"] if "titulo" in kwargs else ""
     }
 
 
+# =====> Nome do usuario requisitado pela web <=====
 def nome_usuario_from_web(**kwargs):
     return {
         kwargs["nome_completo"] if "nome_completo" in kwargs else ""
     }
 
 
+# =====> Locação requisitada pela web <=====
 def locacao_from_web(**kwargs):
     return {
 
@@ -94,31 +107,30 @@ def locacao_from_web(**kwargs):
     }
 
 
+# =====> Locação recebida pelo banco de dados <=====
 def locacao_from_db(locacao):
     return {
         "id": locacao["id"],
-        "data_inicio": (locacao["data_inicio"]).strftime('%d-%m-%Y %H:%M:%S'),
+        "data_inicio": (locacao["data_inicio"]).strftime('%d-%m-%Y %H:%M:%S'),  # =====> Formata datas
         "data_fim": (locacao["data_fim"]).strftime('%d-%m-%Y %H:%M:%S'),
         "filmes_id": locacao["filmes_id"],
-        "usuarios_id": locacao["usuarios_id"],
-        "tipo": str(locacao["tipo"]),
-        "status": locacao["status"],
-        "codigo_pagamento": locacao["codigo_pagamento"],
-        "valor": locacao["valor"],
+        "usuarios_id": locacao["usuarios_id"]
     }
 
 
-# def pagamento_from_web(**kwargs):
-#     return {
-#         "tipo": kwargs["tipo"] if "tipo" in kwargs else ""
-#     }
+# =====> Pagamento requisitado pela web <=====
+def pagamento_from_web(**kwargs):
+    return {
+        "tipo": kwargs["tipo"] if "tipo" in kwargs else ""
+    }
 
 
-# def pagamento_from_db(pagamento):
-#     return {
-#         "id": pagamento["id"],
-#         "tipo": pagamento["tipo"],
-#         "status": pagamento["status"],
-#         "codigo_pagamento": pagamento["codigo_pagamento"],
-#         "valor": pagamento["valor"],
-#     }
+# =====> Pagamento recebido pelo banco de dados <=====
+def pagamento_from_db(pagamento):
+    return {
+        "id": pagamento["id"],
+        "tipo": str(pagamento["tipo"]),
+        "status": str(pagamento["status"]),
+        "codigo_pagamento": str(pagamento["codigo_pagamento"]),
+        "valor": str(pagamento["valor"]),
+    }
