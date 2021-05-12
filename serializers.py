@@ -4,7 +4,7 @@ def diretor_from_web(**kwargs):
     }
 
 
-def diretores_from_db(diretor):
+def diretor_from_db(diretor):
     return {
         "id": diretor["id"],
         "nome_completo": diretor["nome_completo"]
@@ -17,7 +17,7 @@ def genero_from_web(**kwargs):
     }
 
 
-def generos_from_db(genero):
+def genero_from_db(genero):
     return {
         "id": genero["id"],
         "nome": genero["nome"]
@@ -35,7 +35,7 @@ def filme_from_web(**kwargs):
     }
 
 
-def filmes_from_db(filme):
+def filme_from_db(filme):
     return {
         "id": filme["id"],
         "titulo": filme["titulo"],
@@ -54,7 +54,7 @@ def usuario_from_web(**kwargs):
     }
 
 
-def usuarios_from_db(usuario):
+def usuario_from_db(usuario):
     return {
         "id": usuario["id"],
         "nome_completo": usuario["nome_completo"],
@@ -94,31 +94,31 @@ def locacao_from_web(**kwargs):
     }
 
 
-def locacoes_from_db(locacao):
+def locacao_from_db(locacao):
     return {
         "id": locacao["id"],
         "data_inicio": (locacao["data_inicio"]).strftime('%d-%m-%Y %H:%M:%S'),
         "data_fim": (locacao["data_fim"]).strftime('%d-%m-%Y %H:%M:%S'),
         "filmes_id": locacao["filmes_id"],
-        "usuarios_id": locacao["usuarios_id"]
+        "usuarios_id": locacao["usuarios_id"],
+        "tipo": str(locacao["tipo"]),
+        "status": locacao["status"],
+        "codigo_pagamento": locacao["codigo_pagamento"],
+        "valor": locacao["valor"],
     }
 
 
-def pagamento_from_web(**kwargs):
-    return {
-        "tipo": kwargs["tipo"] if "tipo" in kwargs else "",
-        "valor": kwargs["valor"] if "valor" in kwargs else "", # DÚVIDA PARA SER TIRADA SEGUNDA
-        "locacoes_id": kwargs["locacoes_id"] if "locacoes_id" in kwargs else ""
-    }
+# def pagamento_from_web(**kwargs):
+#     return {
+#         "tipo": kwargs["tipo"] if "tipo" in kwargs else ""
+#     }
 
 
-def pagamentos_from_db(pagamento):
-    return {
-        "id": pagamento["id"],
-        "tipo": pagamento["tipo"],
-        "status": pagamento["status"],
-        "codigo_pagamento": pagamento["codigo_pagamento"],
-        "valor": pagamento["valor"],
-        "data": (pagamento["data"]).strftime('%d-%m-%Y %H:%M:%S'),
-        "locacoes_id": pagamento["locacoes_id"]
-    }
+# def pagamento_from_db(pagamento):
+#     return {
+#         "id": pagamento["id"],
+#         "tipo": pagamento["tipo"],
+#         "status": pagamento["status"],
+#         "codigo_pagamento": pagamento["codigo_pagamento"],
+#         "valor": pagamento["valor"],
+#     }

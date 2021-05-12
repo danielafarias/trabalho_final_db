@@ -60,13 +60,13 @@ def valida_locacao(filmes_id, usuarios_id):
     return True
 
 
-def valida_pagamento(tipo, valor, locacoes_id):
-
-    if tipo != "debito" or tipo != "credito" or tipo != "paypal":
-        return False
-
-    if valor == 0:
-        return False
-
-    if locacoes_id == 0:
-        return False
+# def valida_pagamento(tipo):
+#
+#     if tipo == "debito":
+#         return tipo[0]
+#
+#     elif tipo == "credito":
+#         return tipo[1]
+#
+#     else:
+#         return tipo[2]
